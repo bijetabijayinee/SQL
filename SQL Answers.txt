@@ -870,8 +870,6 @@ limit 3
 Question - 23 - Cryptocurrency Transactions Summary Report
 ----------------------------------------------------------
 
-
-
 CREATE table coins2 (
 	id int primary key,
 	name varchar(255)
@@ -921,6 +919,26 @@ where extract(year from cast(t.dt as timestamp))=2024 and
 extract (month from cast(t.dt as timestamp)) =3
 group by name
 order by total_transactions desc
+
+Question- 24
+------------
+select distinct extension ,count(distinct is_suspicious) as total_suspicious_files
+from suspicious_files 
+where is_suspicious=1
+group by extension
+order by extension asc
+limit 5
+
+Question - 25
+-------------
+select email, count(is_scanned) as total_scanned_devices
+from clients as c inner join devices as d
+on c.id=d.client_id
+where extract(year from cast(d.schedule_scan_dt as timestamp)) =2024
+and extract (month from cast (d.schedule_scan_dt as timestamp)) =3
+group by email
+order by email asc
+
 
 
 
