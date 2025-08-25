@@ -922,15 +922,41 @@ order by total_transactions desc
 
 Question- 24
 ------------
-select distinct extension ,count(distinct is_suspicious) as total_suspicious_files
-from suspicious_files 
-where is_suspicious=1
-group by extension
-order by extension asc
-limit 5
+CREATE TABLE suspicious_files (
+    filename VARCHAR(255),
+    extension VARCHAR(255),
+    scan_dt VARCHAR(19),
+    is_suspicious BOOLEAN
+);
+
+INSERT INTO suspicious_files VALUES
+('Sapien.avi', '.avi', '2024-03-30 12:24:10', 1),
+('Pulvinar.doc', '.doc', '2024-03-08 22:00:41', 1),
+('TemporConvallisNulla.gif', '.gif', '2024-03-29 21:32:41', 1),
+('InFaucibus.mp3', '.mp3', '2024-03-20 14:18:32', 1),
+('EleifendPedeLibero.ppt', '.ppt', '2024-03-05 04:47:56', 1),
+('VestibulumAnteIpsum.ppt', '.ppt', '2024-03-05 17:34:34', 1),
+('IntegerPede.ppt', '.ppt', '2024-03-12 17:11:28', 1),
+('VenenatisNon.tiff', '.tiff', '2024-03-20 18:04:47', 1),
+('IaculisDiam.xls', '.xls', '2024-03-01 05:18:03', 1),
+('QuisqueArcuLibero.xls', '.xls', '2024-03-09 09:00:32', 1);
+
+ANSWER
+------
+
+SELECT extension, COUNT(*) AS total_suspicious_files
+FROM suspicious_files AS s 
+WHERE is_suspicious = TRUE
+  AND EXTRACT(YEAR FROM CAST(s.scan_dt AS TIMESTAMP)) = 2024
+  AND EXTRACT(MONTH FROM CAST(s.scan_dt AS TIMESTAMP)) = 3
+GROUP BY extension
+ORDER BY total_suspicious_files DESC, extension ASC
+LIMIT 5;
 
 Question - 25
 -------------
+
+
 select email, count(is_scanned) as total_scanned_devices
 from clients as c inner join devices as d
 on c.id=d.client_id
@@ -938,6 +964,7 @@ where extract(year from cast(d.schedule_scan_dt as timestamp)) =2024
 and extract (month from cast (d.schedule_scan_dt as timestamp)) =3
 group by email
 order by email asc
+
 
 
 
