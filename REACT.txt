@@ -118,3 +118,62 @@ const Summary = ({ income, expenses, onReset }) => {
 };
 
 export default Summary;
+
+--------------------------------------------------------------------
+
+const response = [
+  "India",
+  "Canada",
+  "Germany",
+  "France",
+  "Brazil",
+  "Japan",
+  "Australia",
+  "United States",
+  "United Kingdom",
+];
+
+export default response;
+
+import React from "react";
+
+const CountryList = ({ countries }) => {
+  return (
+    <ul data-testid="countryList">
+      {countries.map((country, idx) => (
+        <li key={idx}>{country}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default CountryList;
+
+import React, { useState } from "react";
+import response from "../response";
+import CountryList from "./CountryList";
+
+const CountryFilter = () => {
+  const [search, setSearch] = useState("");
+
+  const filteredCountries = response.filter((country) =>
+    country.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div>
+      <input
+        type="text"
+        data-testid="filterInput"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search country"
+      />
+      <CountryList countries={filteredCountries} />
+    </div>
+  );
+};
+
+export default CountryFilter;
+
+
