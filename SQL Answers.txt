@@ -1027,6 +1027,18 @@ INSERT INTO site_metrics VALUES
 (2, 30.14, 34.38, 17.67),
 (2, 1.11, 83.44, 2.95);
 
+ANSWER
+------
+
+select email, round(avg(cpu_usage),2), round(avg(memory_usage),2), round(avg(disk_usage),2)
+from customers as c inner join site_metrics as s
+on c.id=s.customer_id
+group by email
+HAVING 
+    AVG(cpu_usage) > 50 
+    OR AVG(memory_usage) > 50 
+    OR AVG(disk_usage) > 50;
+
 Question 27: Dashboard Report for Online Hosting Customers Panel
 ----------------------------------------------------------------
 CREATE TABLE customers (
@@ -1066,6 +1078,13 @@ INSERT INTO sites VALUES
 (3, 'https://www.gizmodo.com', 1),
 (3, 'https://www.163.com', 1);
 
+ANSWER
+------
+SELECT EMAIL, COUNT(IS_ACTIVE) AS TOTAL_ACTIVE_SITES
+FROM CUSTOMERS2 AS C INNER JOIN SITES AS S 
+ON C.ID=S.CUSTOMER_ID
+GROUP BY EMAIL
+ORDER BY EMAIL ASC
 
 Question 28: Average Income Report in Online Tax Application
 ------------------------------------------------------------
@@ -1108,6 +1127,17 @@ INSERT INTO income VALUES
 (5, '2024-03-20 10:29:44', 1670.18),
 (5, '2024-03-27 11:12:04', 1193.15);
 
+ANSWER
+------
+SELECT IBAN, ROUND(AVG(AMOUNT),2) AS AVERAGE_INCOME, ROUND(SUM(AMOUNT),2) AS TOTAL_INCOME
+FROM ACCOUNTS AS A INNER JOIN INCOME AS I 
+ON A.ID=I.ACCOUNT_ID
+WHERE TO_TIMESTAMP(DT,'YYYY-MM-DD HH24;MI;SS') BETWEEN '2024-01-01' AND '2024-03-31'
+GROUP BY IBAN
+ORDER BY AVG(AMOUNT) DESC
+LIMIT 3
+
+
 Question 29: Tax Calculation for Online Tax Application
 -------------------------------------------------------
 
@@ -1144,6 +1174,15 @@ INSERT INTO income VALUES
 (3, '2023-07-21 19:51:14', 4152.29),
 (3, '2023-10-05 05:42:49', 4722.20),
 (3, '2023-11-11 02:42:59', 1592.16);
+
+ANSWER
+------
+SELECT IBAN, SUM(AMOUNT) AS TOTAL_INCOME, '20%' AS TX_RATE, ROUND(SUM(AMOUNT) * 0.20, 2) AS CALCULATED_TAX
+FROM ACCOUNTS2 AS A INNER JOIN INCOME2 AS I
+ON A.ID=I.ACCOUNT_ID
+WHERE EXTRACT(YEAR FROM CAST(I.DT AS TIMESTAMP))=2023
+GROUP BY IBAN 
+ORDER BY IBAN ASC
 
 Question 30: Monthly Budget Report for Online Budgeting Application
 -------------------------------------------------------------------
@@ -1201,6 +1240,17 @@ INSERT INTO income VALUES
 (3, '2024-03-19 12:12:01', 80.00),
 (3, '2024-03-21 00:32:10', 674.76),
 (3, '2024-03-23 14:14:32', 863.79);
+
+ANSWER
+------
+
+SELECT EMAIL, SUM(E.AMOUNT), SUM(I.AMOUNT)
+FROM CUSTOMERS3 AS C
+INNER JOIN EXPENSES3 AS E ON C.ID = E.CUSTOMER_ID
+INNER JOIN INCOME3 AS I ON E.CUSTOMER_ID = I.CUSTOMER_ID
+WHERE EXTRACT(YEAR FROM CAST(E.DT AS TIMESTAMP))=2024 AND EXTRACT(YEAR FROM CAST (I.DT AS TIMESTAMP))=2024 AND 
+EXTRACT(MONTH FROM CAST(E.DT AS TIMESTAMP))=03
+GROUP BY EMAIL;
 
 Question 31: Balance Report for Online Budgeting Application
 ------------------------------------------------------------
@@ -1397,6 +1447,16 @@ INSERT INTO transactions (dt, wallet, amount) VALUES
 ('2024-02-19 11:12:32', '0x9B8aDc2eFf4cC3DdEe5f6a7B8dE9aC1F', 3.67),
 ('2024-03-09 16:52:14', '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c', 1.07),
 ('2024-03-07 10:29:46', '0x9B8aDc2eFf4cC3DdEe5f6a7B8dE9aC1F', 7.26);
+
+SELECT
+    wallet,
+    COUNT(*) AS total_transactions,
+    SUM(CASE WHEN amount < 0 THEN -amount ELSE 0 END) AS total_sold,
+    SUM(CASE WHEN amount >= 0 THEN amount ELSE 0 END) AS total_purchase
+FROM transactions
+WHERE EXTRACT(YEAR FROM CAST(dt AS TIMESTAMP)) = 2024
+  AND EXTRACT(MONTH FROM CAST(dt AS TIMESTAMP)) = 2
+GROUP BY wallet;
 
 Question 35 - : Employee Leave Tracker
 --------------------------------------
@@ -2561,6 +2621,7 @@ INSERT INTO events (campaign_id, dt, value) VALUES
 (3, '2022-07-15 01:17:41', 0.37531),
 (3, '2022-07-15 14:20:48', 0.24872),
 (3, '2022-07-16 23:02:51', 0.80594);
+
 
 
 
