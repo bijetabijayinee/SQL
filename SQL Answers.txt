@@ -2391,6 +2391,16 @@ INSERT INTO readings (account_id, tariff_id, amount) VALUES
 (3, 1, 125),
 (3, 2, 31);
 
+ANSWER
+------
+
+SELECT USERNAME, EMAIL, MAX(NAME), SUM(AMOUNT), SUM(AMOUNT* COST)
+FROM ACCOUNTS A
+JOIN READINGS R ON A.ID=R.ACCOUNT_ID
+JOIN TARIFFS T ON R.TARIFF_ID=T.ID
+GROUP BY A.USERNAME, A.EMAIL
+ORDER BY A.USERNAME
+
 Question 51: MMORPG Game Inventory Overload Notification
 --------------------------------------------------------
 
@@ -2829,6 +2839,7 @@ INSERT INTO events (campaign_id, dt, value) VALUES
 (3, '2022-07-15 01:17:41', 0.37531),
 (3, '2022-07-15 14:20:48', 0.24872),
 (3, '2022-07-16 23:02:51', 0.80594);
+
 
 
 
