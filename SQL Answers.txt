@@ -2515,7 +2515,17 @@ INSERT INTO banners (city_id, width, height) VALUES
 ANSWER
 ------
 
-
+SELECT 
+    c.name AS city,
+    COUNT(b.city_id) AS banners,
+    MIN(b.width * b.height) AS min_area,
+    ROUND(AVG(width * height)) AS avg_area,
+    MAX(b.width * b.height) AS max_area,
+    SUM(b.width * b.height) AS total_area
+FROM cities c
+JOIN banners b ON c.id = b.city_id
+GROUP BY c.name
+ORDER BY c.name;
 
 Question 53: Auction Web Service Lot Statistics
 -----------------------------------------------
@@ -2559,6 +2569,15 @@ INSERT INTO offers (lot_id, amount) VALUES
 (2, 303.29),
 (2, 612.83),
 (3, 464.98);
+
+ANSWER
+------
+
+SELECT NAME, COUNT(LOT_ID), ROUND(MIN(AMOUNT),2), ROUND(MAX(AMOUNT),2), ROUND(AVG(AMOUNT),2)
+FROM LOTS AS L LEFT JOIN OFFERS AS O
+ON L.ID=O.LOT_ID
+GROUP BY NAME
+ORDER BY COUNT(LOT_ID) DESC
 
 Question 54: Tax Calculator Web Service Simple Report
 -----------------------------------------------------
@@ -2607,6 +2626,16 @@ INSERT INTO declarations (account_id, quarter, income) VALUES
 (5, 'Q3', 88396.81),
 (5, 'Q4', 67252.54);
 
+ANSWER
+------
+
+SELECT CONCAT(LAST_NAME, ' ',FIRST_NAME) AS FULLNAME, IBAN, SUM(INCOME), '10%' AS RATE,
+ROUND(0.10*SUM(INCOME),2) AS TAX
+FROM ACCOUNTS3 AS A INNER JOIN DECLARATIONS AS D 
+ON A.ID=D.ACCOUNT_ID
+GROUP BY IBAN, FIRST_NAME, LAST_NAME
+ORDER BY FULLNAME ASC
+
 Question 55: Social Network Relationship Statistics
 ---------------------------------------------------
 
@@ -2651,6 +2680,20 @@ INSERT INTO relations (profile_id, related_to, is_approved) VALUES
 (3, 'agillionc', 0),
 (3, 'fgribbinh', 0);
 
+ANSWER
+------
+
+SELECT 
+    CONCAT(p.last_name, ' ', p.first_name) AS fullname,
+    p.email,
+    COUNT(r.profile_id) AS total_relations,
+    SUM(CASE WHEN r.is_approved = TRUE THEN 1 ELSE 0 END) AS approved_relations,
+	SUM(CASE WHEN R.IS_APPROVED = FALSE THEN 1 ELSE 0 END) AS RENDING_RELATIONS
+FROM profiles p
+JOIN relations r ON p.id = r.profile_id
+GROUP BY p.last_name, p.first_name, p.email
+ORDER BY fullname;
+
 Question 56: Online Banking Transactions
 ----------------------------------------
 
@@ -2692,6 +2735,16 @@ INSERT INTO transactions (account_id, dt, amount) VALUES
 (2, '2022-09-14 12:52:13', 20.36),
 (1, '2022-09-28 11:05:21', 70.52),
 (3, '2022-09-30 09:21:12', 48.00);
+
+ANSWER
+------
+
+SELECT IBAN, COUNT(ACCOUNT_ID), SUM(AMOUNT)
+FROM ACCOUNTS4 AS A INNER JOIN TRANSACTIONS AS T
+ON A.ID=T.ACCOUNT_ID
+WHERE EXTRACT(MONTH FROM CAST(DT AS TIMESTAMP))=9
+GROUP BY IBAN
+ORDER BY SUM(AMOUNT) DESC
 
 Question 57: Internet Service Provider Monthly Report
 -----------------------------------------------------
@@ -2736,6 +2789,17 @@ INSERT INTO traffic (client_id, dt, amount) VALUES
 (5, '2022-06-21', 55460),
 (5, '2022-07-04', 91365),
 (5, '2022-07-09', 23296);
+
+ANSWER
+------
+
+SELECT MAC, SUM(AMOUNT), ROUND(SUM(AMOUNT)*TARIFF,2)
+FROM CLIENTS2 AS C INNER JOIN TRAFFIC2 AS T 
+ON C.ID=T.CLIENT_ID
+WHERE EXTRACT(YEAR FROM CAST(DT AS TIMESTAMP))=2022 AND
+EXTRACT(MONTH FROM CAST(DT AS TIMESTAMP))=5
+GROUP BY MAC, TARIFF
+ORDER BY SUM(AMOUNT) DESC
 
 Question 58: The Yellow Pages Companies Report
 ----------------------------------------------
@@ -2783,6 +2847,15 @@ INSERT INTO categories (company_id, name, review_rating) VALUES
 (5, 'Framing (Steel)', 3),
 (5, 'Structural & Misc Steel Erection', 1);
 
+ANSWER
+------
+SELECT C.NAME, ADDRESS, PHONE,CONCAT(ROUND(AVG(REVIEW_RATING),1),'','(',COUNT(COMPANY_ID),'CATEGORIES',')')
+FROM COMPANIES AS C INNER JOIN CATEGORIES2 AS CC
+ON C.ID=CC.COMPANY_ID
+GROUP BY C.NAME, ADDRESS, PHONE
+ORDER BY C.NAME ASC
+
+
 Question 59: Domain Name Registrar Accounts Report
 --------------------------------------------------
 
@@ -2814,6 +2887,22 @@ INSERT INTO domains (account_id, name, expiration_date) VALUES
 (4, 'artisteer.com', '2022-10-21'),
 (5, 'behance.net', '2022-03-24'),
 (5, 'cnn.com', '2022-05-11');
+
+ANSWER
+------
+
+SELECT 
+    a.username, 
+    COUNT(d.account_id) AS domains, 
+    MIN(d.expiration_date) AS nearest_expiration
+FROM accounts5 AS a
+JOIN domains AS d 
+    ON a.id = d.account_id
+WHERE a.is_active = TRUE
+  AND d.expiration_date > '2022-07-15'
+GROUP BY a.username
+ORDER BY a.username;
+
 
 Question 60: Advertising Network Events Report
 ----------------------------------------------
@@ -2857,6 +2946,15 @@ INSERT INTO events (campaign_id, dt, value) VALUES
 (3, '2022-07-15 14:20:48', 0.24872),
 (3, '2022-07-16 23:02:51', 0.80594);
 
+ANSWER
+------
+
+SELECT NAME, COUNT(CAMPAIGN_ID), ROUND(AVG(VALUE),5)
+FROM CAMPAIGNS3 AS C INNER JOIN EVENTS AS E
+ON C.ID=E.CAMPAIGN_ID
+WHERE CAST(DT AS DATE) = '2022-07-15'
+GROUP BY NAME
+HAVING AVG(VALUE) >=0.7
 
 
 
