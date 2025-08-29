@@ -2956,8 +2956,493 @@ WHERE CAST(DT AS DATE) = '2022-07-15'
 GROUP BY NAME
 HAVING AVG(VALUE) >=0.7
 
+Question 61: Ecommerce Deal Report
+----------------------------------
 
+CREATE TABLE profiles (
+    id SMALLINT PRIMARY KEY,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    email VARCHAR(255)
+);
 
+CREATE TABLE deals (
+    profile_id SMALLINT,
+    dt VARCHAR(19),
+    amount DECIMAL(5, 2),
+    FOREIGN KEY (profile_id) REFERENCES profiles(id)
+);
 
+INSERT INTO profiles (id, first_name, last_name, email) VALUES
+(1, 'Wallis', 'Treadway', 'wtreadway0@senate.gov'),
+(2, 'Franklin', 'Blackston', 'fblackston1@parallels.com'),
+(3, 'Honoria', 'Constant', 'hconstant2@umich.edu'),
+(4, 'Bertine', 'Hillaby', 'bhillaby3@artisteer.com'),
+(5, 'Constance', 'Knutsen', 'cknutsen4@google.ca');
 
+INSERT INTO deals (profile_id, dt, amount) VALUES
+(5, '2022-05-21 02:44:24', 49.10),
+(2, '2022-05-22 23:26:59', 46.21),
+(1, '2022-05-23 09:56:25', 58.57),
+(5, '2022-05-28 02:38:08', 27.81),
+(4, '2022-06-04 07:16:27', 22.31),
+(4, '2022-06-04 14:15:03', 36.33),
+(5, '2022-06-04 15:03:10', 21.41),
+(1, '2022-06-07 02:58:06', 92.84),
+(4, '2022-06-08 05:09:52', 24.41),
+(3, '2022-06-13 03:28:52', 61.55),
+(4, '2022-06-16 15:09:39', 77.70),
+(5, '2022-06-18 16:51:32', 58.79),
+(4, '2022-06-20 02:55:20', 43.61),
+(3, '2022-06-22 06:52:10', 10.41),
+(1, '2022-06-23 04:59:05', 6.59),
+(1, '2022-06-30 16:11:02', 43.07),
+(4, '2022-07-05 06:05:28', 36.45),
+(5, '2022-07-12 07:49:51', 14.76),
+(4, '2022-07-12 18:58:11', 91.61),
+(5, '2022-07-14 00:50:45', 69.61);
 
+Question 62: Freelance Platform Candidate Review
+------------------------------------------------
+
+CREATE TABLE profiles (
+    id SMALLINT PRIMARY KEY,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    email VARCHAR(255),
+    is_verified SMALLINT
+);
+
+CREATE TABLE stats (
+    profile_id SMALLINT,
+    job_success_score SMALLINT,
+    FOREIGN KEY (profile_id) REFERENCES profiles(id)
+);
+
+INSERT INTO profiles (id, first_name, last_name, email, is_verified) VALUES
+(1, 'Junia', 'Sehorsch', 'jsehorsch0@oracle.com', 0),
+(2, 'Dave', 'Halliburton', 'dhalliburton1@pbs.org', 1),
+(3, 'Agneta', 'Dutch', 'adutch2@thetimes.co.uk', 1),
+(4, 'Kendell', 'Sylvester', 'ksylvester3@canalblog.com', 1),
+(5, 'Koralle', 'Ragsdale', 'kragsdale4@buzzfeed.com', 1),
+(6, 'Roma', 'Kenelin', 'rkenelin5@prnewswire.com', 1),
+(7, 'Harold', 'Molloy', 'hmolloy6@ycombinator.com', 1),
+(8, 'Berri', 'Hartzogs', 'bhartzogs7@ox.ac.uk', 0),
+(9, 'Garrik', 'Preddle', 'gpreddle8@topsy.com', 1),
+(10, 'Sophie', 'Messenger', 'smessenger9@myspace.com', 1),
+(11, 'Ashby', 'Philipsson', 'aphilipssona@typepad.com', 1),
+(12, 'Kayle', 'Jesteco', 'kjestecob@ocn.ne.jp', 1),
+(13, 'Munroe', 'Chevolleau', 'mchevolleauc@yandex.ru', 1),
+(14, 'Etheline', 'Choake', 'echoaked@hao123.com', 1),
+(15, 'Marten', 'Zamboniari', 'mzamboniarie@cbc.ca', 1),
+(16, 'Hersch', 'Blasdale', 'hblasdalef@wunderground.com', 1),
+(17, 'Jori', 'MacFaell', 'jmacfaellg@va.gov', 1),
+(18, 'Margo', 'Finnemore', 'mfinnemoreh@discovery.com', 1),
+(19, 'Felicle', 'Ramsdale', 'framsdalei@devhub.com', 1),
+(20, 'Demetris', 'Arnet', 'darnetj@livejournal.com', 1);
+
+INSERT INTO stats (profile_id, job_success_score) VALUES
+(4, 100),
+(1, 100),
+(18, 95),
+(5, 95),
+(8, 95),
+(10, 95),
+(12, 95),
+(13, 95),
+(14, 95),
+(20, 90),
+(17, 90),
+(7, 90),
+(15, 90),
+(11, 85),
+(16, 85),
+(9, 85),
+(6, 85),
+(2, 85),
+(3, 75),
+(19, 75);
+
+Question 63: Virtual Machine Deployment Report
+----------------------------------------------
+
+CREATE TABLE configurations (
+    id VARCHAR(64) PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE deployments (
+    configuration_id VARCHAR(64),
+    dt VARCHAR(19),
+    FOREIGN KEY (configuration_id) REFERENCES configurations(id)
+);
+
+INSERT INTO configurations (id, name) VALUES
+('1vcpu_512mb_10gb_500gb', '1 CPU / 512 MB RAM / 10 GB SSD Disk / 500 GB transfer'),
+('1vcpu_1gb_25gb_1tb', '1 CPU / 1 GB RAM / 25 GB SSD Disk / 1000 GB transfer'),
+('1vcpu_2gb_50gb_2tb', '1 CPU / 2 GB RAM / 50 GB SSD Disk / 2 TB transfer'),
+('2vcpu_2gb_60gb_3tb', '2 CPUs / 2 GB RAM / 60 GB SSD Disk / 3 TB transfer'),
+('2vcpu_4gb_80gb_4tb', '2 CPUs / 4 GB RAM / 80 GB SSD Disk / 4 TB transfer'),
+('4vcpu_8gb_160gb_5tb', '4 CPUs / 8 GB RAM / 160 GB SSD Disk / 5 TB transfer'),
+('8vcpu_16gb_320gb_6tb', '8 CPUs / 16 GB RAM / 320 GB SSD Disk / 6 TB transfer');
+
+INSERT INTO deployments (configuration_id, dt) VALUES
+('1vcpu_512mb_10gb_500gb', '2020-10-22 05:59:47'),
+('1vcpu_1gb_25gb_1tb', '2020-11-09 06:07:57'),
+('1vcpu_2gb_50gb_2tb', '2020-12-02 14:47:24'),
+('2vcpu_2gb_60gb_3tb', '2021-01-24 15:41:42'),
+('4vcpu_8gb_160gb_5tb', '2021-01-25 09:31:37'),
+('2vcpu_2gb_60gb_3tb', '2021-02-08 02:43:14'),
+('1vcpu_512mb_10gb_500gb', '2021-03-25 06:13:36'),
+('8vcpu_16gb_320gb_6tb', '2021-03-26 22:23:42'),
+('2vcpu_2gb_60gb_3tb', '2021-05-24 09:48:16'),
+('1vcpu_512mb_10gb_500gb', '2021-05-31 05:03:28'),
+('1vcpu_2gb_50gb_2tb', '2021-08-25 22:24:10'),
+('2vcpu_4gb_80gb_4tb', '2021-09-05 22:12:17'),
+('2vcpu_4gb_80gb_4tb', '2021-09-23 08:31:50'),
+('2vcpu_4gb_80gb_4tb', '2021-09-28 05:15:24'),
+('2vcpu_2gb_60gb_3tb', '2021-10-14 08:26:20'),
+('1vcpu_2gb_50gb_2tb', '2021-11-01 19:00:30'),
+('1vcpu_512mb_10gb_500gb', '2021-11-26 10:53:05'),
+('1vcpu_1gb_25gb_1tb', '2021-12-27 07:07:23'),
+('2vcpu_2gb_60gb_3tb', '2022-02-13 06:00:29'),
+('2vcpu_2gb_60gb_3tb', '2022-03-03 09:10:30');
+
+Question 64: Visitors Behavior Report
+-------------------------------------
+CREATE TABLE events (
+    dt VARCHAR(19),
+    type VARCHAR(64)
+);
+
+INSERT INTO events (dt, type) VALUES
+('2022-04-04 03:36:00', 'buy'),
+('2022-04-21 07:05:09', 'buy'),
+('2022-04-02 11:34:24', 'sell'),
+('2022-05-27 16:12:50', 'buy'),
+('2022-05-20 09:09:07', 'buy'),
+('2022-05-22 09:06:37', 'buy'),
+('2022-05-31 07:49:36', 'buy'),
+('2022-05-14 22:29:10', 'buy'),
+('2022-05-13 15:00:54', 'sell'),
+('2022-05-24 15:40:54', 'sell'),
+('2022-05-13 01:20:05', 'sell'),
+('2022-05-16 07:07:44', 'sell'),
+('2022-05-01 16:57:00', 'sell'),
+('2022-06-02 09:42:02', 'buy'),
+('2022-06-01 06:34:59', 'buy'),
+('2022-06-06 17:14:47', 'buy'),
+('2022-06-05 13:37:23', 'buy'),
+('2022-06-17 19:10:13', 'buy'),
+('2022-06-15 21:40:13', 'sell'),
+('2022-06-11 12:26:43', 'sell');
+
+Question 65: Advertising Campaigns Report
+-----------------------------------------
+
+CREATE TABLE companies (
+    id SMALLINT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+CREATE TABLE campaigns (
+    company_id SMALLINT,
+    expenses DECIMAL(7, 2),
+    revenue DECIMAL(7, 2),
+    FOREIGN KEY (company_id) REFERENCES companies(id)
+);
+
+INSERT INTO companies (id, name) VALUES
+(1, 'Lion Biotechnologies, Inc.'),
+(2, 'Boston Private Financial Holdings, Inc.'),
+(3, 'Universal Corporation'),
+(4, 'Arbutus Biopharma Corporation'),
+(5, 'Royal Bank Of Canada'),
+(6, 'Penn West Petroleum Ltd'),
+(7, 'Public Storage'),
+(8, 'Halcon Resources Corporation'),
+(9, 'TTM Technologies, Inc.'),
+(10, 'Atwood Oceanics, Inc.'),
+(11, 'ACADIA Pharmaceuticals Inc.'),
+(12, 'Central European Media Enterprises Ltd.'),
+(13, 'Oxbridge Re Holdings Limited'),
+(14, 'Western Refining Logistics, LP'),
+(15, 'Vaalco Energy Inc'),
+(16, 'Xilinx, Inc.'),
+(17, 'Liberty Global plc'),
+(18, 'Honda Motor Company, Ltd.'),
+(19, 'Great Plains Energy Inc'),
+(20, 'Assurant, Inc.');
+
+INSERT INTO campaigns (company_id, expenses, revenue) VALUES
+(1, 7390.24, 8652.18),
+(2, 5774.65, 7955.47),
+(3, 2154.71, 5920.23),
+(4, 9366.49, 3397.85),
+(5, 2765.18, 9158.63),
+(6, 7908.41, 5018.85),
+(7, 2251.44, 6654.52),
+(8, 3383.14, 9354.79),
+(9, 8287.96, 9522.53),
+(10, 4356.62, 4658.52),
+(11, 9272.86, 9161.77),
+(12, 4996.18, 5903.57),
+(13, 8354.75, 2259.26),
+(14, 6402.90, 8146.16),
+(15, 1692.05, 686.71),
+(16, 5988.48, 9089.41),
+(17, 6192.33, 7580.19),
+(18, 3016.37, 7761.25),
+(19, 9838.05, 1293.09),
+(20, 4386.52, 9513.73);
+
+Question 66: Traffic Audit Report
+---------------------------------
+CREATE TABLE clients (
+    mac VARCHAR(64),
+    upstream_rate INT,
+    downstream_rate INT,
+    downtime_rate VARCHAR(64)
+);
+
+INSERT INTO clients (mac, upstream_rate, downstream_rate, downtime_rate) VALUES
+('78-C1-E5-20-D5-61', 925526, 5195, 'never'),
+('78-E2-20-71-9C-30', 582152, 375829, 'never'),
+('0D-09-F7-77-03-E5', 359529, 710743, 'never'),
+('56-18-67-55-58-EA', 78626, 562544, 'once'),
+('C9-73-EC-1C-4C-B7', 574927, 669655, 'yearly'),
+('02-35-3F-7B-CC-76', 430072, 296196, 'seldom'),
+('3D-95-33-8A-65-F9', 894176, 489401, 'monthly'),
+('8D-33-3F-0E-04-D5', 897666, 297063, 'weekly'),
+('0E-0A-63-B9-79-3E', 69133, 984354, 'seldom'),
+('15-D3-2A-DD-02-A4', 19203, 995983, 'seldom'),
+('8D-42-B1-97-AB-87', 476648, 177677, 'monthly'),
+('6B-64-60-47-16-D3', 700056, 374321, 'monthly'),
+('FD-61-81-00-BF-EC', 216401, 498229, 'yearly'),
+('95-46-C6-C7-6F-E0', 236331, 341013, 'monthly'),
+('11-0E-62-32-62-5E', 694746, 451525, 'daily'),
+('D6-5B-72-D5-FF-4F', 2931, 992852, 'monthly'),
+('66-BF-AD-F2-E5-45', 861075, 44216, 'monthly'),
+('E5-C9-C6-74-2E-A8', 639487, 968494, 'daily'),
+('18-56-3A-93-8E-9F', 494945, 259910, 'weekly'),
+('51-EB-D7-22-45-99', 219419, 326479, 'often');
+
+Question 67: Calendar Application Events Report
+-----------------------------------------------
+
+CREATE TABLE owners (
+    id SMALLINT PRIMARY KEY,
+    full_name VARCHAR(255),
+    email_address VARCHAR(255),
+    on_vacation SMALLINT
+);
+
+CREATE TABLE events (
+    owner_id SMALLINT,
+    dt VARCHAR(19),
+    title VARCHAR(255),
+    FOREIGN KEY (owner_id) REFERENCES owners(id)
+);
+
+INSERT INTO owners (id, full_name, email_address, on_vacation) VALUES
+(2, 'Aleksandr Fellows', 'afellows1@instagram.com', 0),
+(3, 'Collete Pack', 'cpack2@mit.edu', 0),
+(4, 'Lorelle Squibb', 'lsquibb3@huffingtonpost.com', 0),
+(1, 'Benjamin Sevier', 'bsevier0@discuz.net', 1),
+(5, 'Cointon Welberry', 'cwelberry4@theguardian.com', 1);
+
+INSERT INTO events (owner_id, dt, title) VALUES
+(1, '2021-08-13 09:17:41', 'ac consequat metus sapien ut'),
+(1, '2021-10-26 16:14:28', 'a libero nam'),
+(1, '2022-05-18 16:09:36', 'vestibulum ante ipsum primis in faucibus'),
+(1, '2022-06-04 20:37:36', 'nisi volutpat eleifend donec'),
+(2, '2021-01-17 23:34:59', 'eu mi nulla ac'),
+(2, '2021-01-26 15:59:04', 'nisl venenatis lacinia'),
+(2, '2021-04-25 05:04:29', 'arcu adipiscing molestie hendrerit'),
+(2, '2022-02-22 10:24:50', 'lectus vestibulum quam sapien varius'),
+(2, '2022-05-22 03:04:33', 'pellentesque quisque porta volutpat erat'),
+(3, '2021-03-11 08:25:21', 'felis sed interdum venenatis'),
+(3, '2022-02-15 07:29:45', 'nulla sed accumsan felis ut'),
+(4, '2021-02-28 16:10:55', 'cras mi pede malesuada in imperdiet et'),
+(4, '2021-05-20 03:35:11', 'odio in hac habitasse platea dictumst'),
+(4, '2021-09-01 19:25:41', 'sagittis nam congue risus semper'),
+(4, '2022-02-04 03:11:53', 'luctus cum sociis natoque penatibus et magnis'),
+(4, '2022-06-18 08:39:41', 'nec molestie sed justo pellentesque'),
+(5, '2021-04-04 13:39:38', 'id massa id nisl venenatis lacinia aenean'),
+(5, '2021-10-18 19:04:14', 'adipiscing lorem vitae mattis'),
+(5, '2021-10-19 00:56:11', 'vestibulum eget vulputate ut ultrices vel augue'),
+(5, '2022-04-26 18:55:04', 'at dolor quis');
+
+Question 68: Firewall Active Clients Tracking
+---------------------------------------------
+
+CREATE TABLE clients (
+    id SMALLINT PRIMARY KEY,
+    mac VARCHAR(64)
+);
+
+CREATE TABLE traffic (
+    client_id SMALLINT,
+    amount INT,
+    FOREIGN KEY (client_id) REFERENCES clients(id)
+);
+
+INSERT INTO clients (id, mac) VALUES
+(1, 'E5-A3-AC-8A-20-F9'),
+(2, '3B-2F-83-25-A8-81'),
+(3, '3A-4E-A6-43-1D-B1'),
+(4, 'B7-03-14-91-8F-58'),
+(5, '63-1A-FD-9A-AF-6F'),
+(6, 'D6-B8-1F-1D-34-04'),
+(7, '38-83-E5-F8-C8-DC'),
+(8, 'E9-F6-89-7F-8D-34'),
+(9, '82-2E-B3-67-04-41'),
+(10, 'D1-9D-DE-37-A0-49'),
+(11, '8A-46-F4-83-29-13'),
+(12, '4C-1F-7B-C7-08-7E'),
+(13, '72-57-E6-CA-2C-91'),
+(14, '57-F7-E7-E7-45-36'),
+(15, '05-8A-05-1D-2D-20'),
+(16, '46-06-F1-B9-65-7C'),
+(17, '0A-E0-26-9D-2A-27'),
+(18, 'F0-86-99-18-36-9B'),
+(19, 'DD-81-BF-53-BD-9B'),
+(20, '50-53-64-8E-42-BE');
+
+INSERT INTO traffic (client_id, amount) VALUES
+(3, 6385047),
+(8, 6490817),
+(14, 9109219),
+(16, 5558512),
+(17, 1870152),
+(17, 8228920),
+(18, 326127),
+(18, 5429741),
+(18, 4063477),
+(19, 7411789),
+(20, 5832337),
+(20, 1426585),
+(23, 1097368), -- Note: client_id 23 does not exist in clients table in sample data
+(23, 6769594), -- Note: client_id 23 does not exist in clients table in sample data
+(23, 802387),  -- Note: client_id 23 does not exist in clients table in sample data
+(24, 5959513), -- Note: client_id 24 does not exist in clients table in sample data
+(24, 1300408), -- Note: client_id 24 does not exist in clients table in sample data
+(24, 4631624), -- Note: client_id 24 does not exist in clients table in sample data
+(28, 1629306), -- Note: client_id 28 does not exist in clients table in sample data
+(29, 2814818); -- Note: client_id 29 does not exist in clients table in sample data
+
+Question 69: Active Wallets
+---------------------------
+
+CREATE TABLE wallets (
+    id SMALLINT PRIMARY KEY,
+    address VARCHAR(64)
+);
+
+CREATE TABLE transactions (
+    wallet_id SMALLINT,
+    credit DECIMAL(4, 2),
+    FOREIGN KEY (wallet_id) REFERENCES wallets(id)
+);
+
+INSERT INTO wallets (id, address) VALUES
+(1, '0x1ecc4cefde6dfb773352a2dcd8b5f518ccd24ff4'),
+(2, '0x0f4487168610dcae7f16b6c000a7ba284bb6703c'),
+(3, '0x54c5c516b5c601a3edea18db966186274879e6'),
+(4, '0x50c404a6790d44849c3500d95f147d2102db5f77'),
+(5, '0x41cc32037fdcc6cbf5cb04ada4e38032a84361ac'),
+(6, '0xb38ca2076b2c3a0a1c0796ccab5dc3fcbb645336'),
+(7, '0x923c6ee4debce6c37c512eb90e9b26fc9bbfc3e1'),
+(8, '0x76cfbf67e1765117a98fd2286bdbcb731b0d29ec'),
+(9, '0xf4dff43df89365453440dbeb5e53445d3400d218'),
+(10, '0x010a4b23f985eda6b397864878cb70bf0b233aa6'),
+(11, '0x106c4c852394d5a6580c11ca0060687a798ec78c'),
+(12, '0x541da74b9f4b2283524a65156263bcce7429ba61'),
+(13, '0x86df8e62ad23a35ee2e64b3b4b128d8a3660116a'),
+(14, '0x6b021b12b779aec27009f18bd6ad227685df5474'),
+(15, '0x7073e9f48b7211d9940db4c8bad8e31d5d9d0577'),
+(16, '0x4672e132b9627a7db76e5af431bb5febc93b1b2f'),
+(17, '0x5cbc82a01d3b9df8f50ee09bf5a1c48afe0cb966'),
+(18, '0x1c7d30f90081b45004e0d6549534ef8658795672'),
+(19, '0xf830618ca9f027ce5f23bf270629a6a418ad355c'),
+(20, '0x1a31ac1b923fcc17a42a340091424ea18192a3e7');
+
+INSERT INTO transactions (wallet_id, credit) VALUES
+(3, 5.21),
+(6, 24.04),
+(8, 29.66),
+(10, 1.67),
+(10, 3.32),
+(10, 4.27),
+(14, 3.32),
+(14, 3.35),
+(15, 14.34),
+(16, 11.94),
+(20, 13.86),
+(20, 16.54),
+(21, 11.64), -- Note: wallet_id 21 does not exist in wallets table in sample data
+(25, 12.86), -- Note: wallet_id 25 does not exist in wallets table in sample data
+(26, 8.77),  -- Note: wallet_id 26 does not exist in wallets table in sample data
+(26, 12.36), -- Note: wallet_id 26 does not exist in wallets table in sample data
+(27, 29.65), -- Note: wallet_id 27 does not exist in wallets table in sample data
+(28, 3.00),  -- Note: wallet_id 28 does not exist in wallets table in sample data
+(28, 13.26), -- Note: wallet_id 28 does not exist in wallets table in sample data
+(28, 2.85);  -- Note: wallet_id 28 does not exist in wallets table in sample data
+
+Question 70: Animal Tracking
+----------------------------
+
+CREATE TABLE animals (
+    id SMALLINT PRIMARY KEY,
+    name VARCHAR(64)
+);
+
+CREATE TABLE tracklog (
+    animal_id SMALLINT,
+    tracked_at VARCHAR(19),
+    FOREIGN KEY (animal_id) REFERENCES animals(id)
+);
+
+INSERT INTO animals (id, name) VALUES
+(1, 'Blue and yellow macaw'),
+(2, 'Jungle kangaroo'),
+(3, 'Stork, woolly-necked'),
+(4, 'North American river otter'),
+(5, 'Square-lipped rhinoceros'),
+(6, 'Black-fronted bulbul'),
+(7, 'American beaver'),
+(8, 'Capybara'),
+(9, 'Black-backed jackal'),
+(10, 'Dragon, ornate rock'),
+(11, 'Wombat, southern hairy-nosed'),
+(12, 'Snake, carpet'),
+(13, 'Egyptian cobra'),
+(14, 'Green heron'),
+(15, 'Indian star tortoise'),
+(16, 'Roan antelope'),
+(17, 'Rhea, common'),
+(18, 'Fairy penguin'),
+(19, 'Black-eyed bulbul'),
+(20, 'Starling, cape');
+
+INSERT INTO tracklog (animal_id, tracked_at) VALUES
+(2, '2021-07-08 12:30:34'),
+(5, '2021-09-15 03:00:04'),
+(8, '2021-12-14 11:20:50'),
+(9, '2021-05-15 14:54:15'),
+(11, '2021-07-03 17:04:14'),
+(11, '2021-02-23 09:02:11'),
+(15, '2021-11-02 22:49:37'),
+(15, '2021-07-31 04:51:25'),
+(15, '2021-06-06 14:57:23'),
+(19, '2021-03-25 02:00:31'),
+(19, '2021-04-21 22:02:51'),
+(19, '2021-07-17 17:12:35'),
+(21, '2021-05-06 03:35:59'), -- Note: animal_id 21 does not exist in animals table in sample data
+(22, '2021-09-21 22:49:36'), -- Note: animal_id 22 does not exist in animals table in sample data
+(22, '2021-12-04 00:26:29'), -- Note: animal_id 22 does not exist in animals table in sample data
+(24, '2021-12-27 08:19:52'), -- Note: animal_id 24 does not exist in animals table in sample data
+(26, '2021-05-14 07:30:11'), -- Note: animal_id 26 does not exist in animals table in sample data
+(28, '2021-06-08 00:47:00'), -- Note: animal_id 28 does not exist in animals table in sample data
+(28, '2021-04-24 00:42:31'), -- Note: animal_id 28 does not exist in animals table in sample data
+(30, '2021-05-06 21:03:03'); -- Note: animal_id 30 does not exist in animals table in sample data
