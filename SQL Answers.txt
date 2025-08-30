@@ -3002,6 +3002,18 @@ INSERT INTO deals (profile_id, dt, amount) VALUES
 (4, '2022-07-12 18:58:11', 91.61),
 (5, '2022-07-14 00:50:45', 69.61);
 
+ANSWER
+-------
+
+SELECT FIRST_NAME, LAST_NAME, EMAIL, SUM(AMOUNT)
+FROM PROFILES2 AS P INNER JOIN DEALS AS D
+ON P.ID=D.PROFILE_ID
+WHERE EXTRACT (YEAR FROM CAST(DT AS TIMESTAMP))=2022 AND
+EXTRACT(MONTH FROM CAST(DT AS TIMESTAMP))=6
+GROUP BY FIRST_NAME, LAST_NAME, EMAIL
+ORDER BY SUM(AMOUNT) DESC
+LIMIT 3
+
 Question 62: Freelance Platform Candidate Review
 ------------------------------------------------
 
@@ -3063,6 +3075,18 @@ INSERT INTO stats (profile_id, job_success_score) VALUES
 (3, 75),
 (19, 75);
 
+ANSWER
+------
+
+SELECT FIRST_NAME, LAST_NAME, EMAIL, JOB_SUCCESS_SCORE
+FROM PROFILES3 AS P INNER JOIN STATS AS S
+ON P.ID=S.PROFILE_ID
+WHERE IS_VERIFIED=1
+GROUP BY FIRST_NAME, LAST_NAME, EMAIL, JOB_SUCCESS_SCORE
+HAVING JOB_SUCCESS_SCORE >=90
+ORDER BY JOB_SUCCESS_SCORE DESC
+LIMIT 10
+
 Question 63: Virtual Machine Deployment Report
 ----------------------------------------------
 
@@ -3108,6 +3132,16 @@ INSERT INTO deployments (configuration_id, dt) VALUES
 ('2vcpu_2gb_60gb_3tb', '2022-02-13 06:00:29'),
 ('2vcpu_2gb_60gb_3tb', '2022-03-03 09:10:30');
 
+ANSWER
+------
+
+SELECT NAME AS CONFIGURATION, COUNT(CONFIGURATION_ID)
+FROM CONFIGURATIONS AS C INNER JOIN DEPLOYMENTS AS D 
+ON C.ID=D.CONFIGURATION_ID
+WHERE EXTRACT(YEAR FROM CAST(DT AS TIMESTAMP))=2021
+GROUP BY NAME
+ORDER BY COUNT(CONFIGURATION_ID) DESC
+
 Question 64: Visitors Behavior Report
 -------------------------------------
 CREATE TABLE events (
@@ -3136,6 +3170,13 @@ INSERT INTO events (dt, type) VALUES
 ('2022-06-17 19:10:13', 'buy'),
 ('2022-06-15 21:40:13', 'sell'),
 ('2022-06-11 12:26:43', 'sell');
+
+ANSWER
+-------
+
+SELECT COUNT(TYPE) as purchases
+FROM EVENTS2 WHERE TYPE='buy' and extract(year from cast(dt as timestamp))=2022
+and extract(month from cast(dt as timestamp))=5
 
 Question 65: Advertising Campaigns Report
 -----------------------------------------
@@ -3196,6 +3237,17 @@ INSERT INTO campaigns (company_id, expenses, revenue) VALUES
 (19, 9838.05, 1293.09),
 (20, 4386.52, 9513.73);
 
+ANSWER
+------
+
+SELECT NAME, SUM(REVENUE)-SUM(EXPENSES) AS PROFIT
+FROM COMPANIES2 AS C INNER JOIN CAMPAIGNS2 AS CC
+ON C.ID=CC.COMPANY_ID
+GROUP BY NAME
+HAVING SUM(REVENUE)-SUM(EXPENSES)>0
+ORDER BY PROFIT DESC
+LIMIT 3
+
 Question 66: Traffic Audit Report
 ---------------------------------
 CREATE TABLE clients (
@@ -3226,6 +3278,15 @@ INSERT INTO clients (mac, upstream_rate, downstream_rate, downtime_rate) VALUES
 ('E5-C9-C6-74-2E-A8', 639487, 968494, 'daily'),
 ('18-56-3A-93-8E-9F', 494945, 259910, 'weekly'),
 ('51-EB-D7-22-45-99', 219419, 326479, 'often');
+
+ANSWER
+------
+
+SELECT MAC,sum(upstream_rate), sum(downstream_rate), downtime_rate
+FROM CLIENTS3
+WHERE DOWNTIME_RATE='never' OR DOWNTIME_RATE='once'
+group by mac, downtime_rate
+having sum(upstream_rate)<sum(downstream_rate)
 
 Question 67: Calendar Application Events Report
 -----------------------------------------------
@@ -3272,6 +3333,17 @@ INSERT INTO events (owner_id, dt, title) VALUES
 (5, '2021-10-18 19:04:14', 'adipiscing lorem vitae mattis'),
 (5, '2021-10-19 00:56:11', 'vestibulum eget vulputate ut ultrices vel augue'),
 (5, '2022-04-26 18:55:04', 'at dolor quis');
+
+ANSWER
+------
+
+SELECT DT, TITLE, FULL_NAME, EMAIL_ADDRESS
+FROM EVENTS3 AS E INNER JOIN OWNERS AS O
+ON O.ID=E.OWNER_ID
+WHERE ON_VACATION=0
+GROUP BY DT, TITLE, FULL_NAME,EMAIL_ADDRESS
+ORDER BY DT ASC
+LIMIT 5
 
 Question 68: Firewall Active Clients Tracking
 ---------------------------------------------
@@ -3331,6 +3403,14 @@ INSERT INTO traffic (client_id, amount) VALUES
 (28, 1629306), -- Note: client_id 28 does not exist in clients table in sample data
 (29, 2814818); -- Note: client_id 29 does not exist in clients table in sample data
 
+ANSWER
+------
+
+SELECT DISTINCT c.mac AS mac
+FROM clients c
+JOIN traffic t ON c.id = t.client_id
+ORDER BY c.mac;
+
 Question 69: Active Wallets
 ---------------------------
 
@@ -3389,6 +3469,14 @@ INSERT INTO transactions (wallet_id, credit) VALUES
 (28, 13.26), -- Note: wallet_id 28 does not exist in wallets table in sample data
 (28, 2.85);  -- Note: wallet_id 28 does not exist in wallets table in sample data
 
+ANSWER
+------
+
+SELECT DISTINCT w.address AS address
+FROM wallets w
+JOIN transactions t ON w.id = t.wallet_id
+ORDER BY w.address;
+
 Question 70: Animal Tracking
 ----------------------------
 
@@ -3446,6 +3534,14 @@ INSERT INTO tracklog (animal_id, tracked_at) VALUES
 (28, '2021-06-08 00:47:00'), -- Note: animal_id 28 does not exist in animals table in sample data
 (28, '2021-04-24 00:42:31'), -- Note: animal_id 28 does not exist in animals table in sample data
 (30, '2021-05-06 21:03:03'); -- Note: animal_id 30 does not exist in animals table in sample data
+
+ANSWER
+------
+
+SELECT DISTINCT a.name AS name
+FROM animals a
+JOIN tracklog t ON a.id = t.animal_id
+ORDER BY a.name;
 
 -- SQL Questions 71-98: CREATE TABLE and INSERT Statements
 
@@ -4455,3 +4551,4 @@ INSERT INTO transactions (dt, customer, debit, credit) VALUES
 ('2021-12-09 21:31:29', 'Rasla Venny', 87.96, 5.87),
 ('2021-12-11 13:02:54', 'Rasla Venny', 45.42, 55.81),
 ('2021-12-28 18:04:52', 'Rasla Venny', 68.17, 85.30);
+
