@@ -3589,6 +3589,27 @@ INSERT INTO ORDERS (order_id, customer_id, order_type, order_amount) VALUES
 (4657, 404, 'Buy', 427.30),
 (9744, 402, 'Sell', 623.36);
 
+ANSWER
+------
+
+SELECT
+    c.customer_name,
+    ROUND(SUM(
+        CASE
+            WHEN o.order_type = 'Buy' THEN o.order_amount * 0.001
+            WHEN o.order_type = 'Sell' THEN o.order_amount * 0.0015
+            ELSE 0
+        END
+    ), 2) AS total_fees
+FROM
+    CUSTOMERS2 c
+JOIN
+    ORDERS o ON c.id = o.customer_id
+GROUP BY
+    c.customer_name
+ORDER BY
+    c.customer_name;
+
 -- Question 72: Credit Dues
 -- Schema: CREDIT_HOLDERS, TRANSACTIONS
 
@@ -4551,4 +4572,5 @@ INSERT INTO transactions (dt, customer, debit, credit) VALUES
 ('2021-12-09 21:31:29', 'Rasla Venny', 87.96, 5.87),
 ('2021-12-11 13:02:54', 'Rasla Venny', 45.42, 55.81),
 ('2021-12-28 18:04:52', 'Rasla Venny', 68.17, 85.30);
+
 
