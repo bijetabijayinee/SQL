@@ -1,3 +1,4 @@
+
 Question 1 - Detecting Potential Payment Fraud in an Online Marketplace
 -----------------------------------------------------------------------
 
@@ -3660,6 +3661,17 @@ INSERT INTO TRANSACTIONS (transaction_id, credit_holder_id, amount) VALUES
 (9756, 101, 45.41),
 (9702, 105, 69.75);
 
+ANSWER
+------
+
+SELECT CONCAT(FIRST_NAME,' ',LAST_NAME) as fullname, 
+round(sum(amount)+0.18*sum(amount),2) as dues
+FROM CREDIT_HOLDERS AS C INNER JOIN TRANSACTIONS2 AS T
+ON C.ID=T.credit_holder_ID
+where interest_rate>12
+GROUP BY FIRST_NAME, LAST_NAME
+order by dues desc
+
 -- Question 73: Interest Earned
 -- Schema: ACCOUNTS
 
@@ -3682,6 +3694,13 @@ INSERT INTO ACCOUNTS (id, account_holder, amount) VALUES
 (8, 'Alex Canty', '$2590.45'),
 (9, 'Blake Hawbaker', '$3987.27'),
 (10, 'Taylor Blackston', '$8351.98');
+
+ANSWER
+------
+SELECT ACCOUNT_HOLDER,
+       CONCAT('$', ROUND(SUM(REPLACE(AMOUNT, '$', '')::NUMERIC * 0.05), 2)) AS INTEREST
+FROM ACCOUNTS6
+GROUP BY ACCOUNT_HOLDER;
 
 -- Question 74: Monthly Revenue
 -- Schema: TRANSACTIONS
@@ -3709,6 +3728,31 @@ INSERT INTO TRANSACTIONS (transaction_id, amount) VALUES
 ('21JUN2726', 611.94),
 ('19OCT6594', 478.54),
 ('19APR4657', 183.20);
+
+ANSWER
+------
+
+SELECT
+    SUBSTRING(transaction_id FROM 1 FOR 2) AS year,
+    SUBSTRING(transaction_id FROM 3 FOR 3) AS month,
+    ROUND(SUM(amount), 2) AS total_transactions
+FROM TRANSACTIONS6
+GROUP BY year, month
+ORDER BY year ASC,
+         CASE SUBSTRING(transaction_id FROM 3 FOR 3)
+             WHEN 'JAN' THEN 1
+             WHEN 'FEB' THEN 2
+             WHEN 'MAR' THEN 3
+             WHEN 'APR' THEN 4
+             WHEN 'MAY' THEN 5
+             WHEN 'JUN' THEN 6
+             WHEN 'JUL' THEN 7
+             WHEN 'AUG' THEN 8
+             WHEN 'SEP' THEN 9
+             WHEN 'OCT' THEN 10
+             WHEN 'NOV' THEN 11
+             WHEN 'DEC' THEN 12
+         END ASC;
 
 -- Question 75: Final Result
 -- Schema: RESULTS
@@ -4572,5 +4616,6 @@ INSERT INTO transactions (dt, customer, debit, credit) VALUES
 ('2021-12-09 21:31:29', 'Rasla Venny', 87.96, 5.87),
 ('2021-12-11 13:02:54', 'Rasla Venny', 45.42, 55.81),
 ('2021-12-28 18:04:52', 'Rasla Venny', 68.17, 85.30);
+
 
 
