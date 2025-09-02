@@ -60,7 +60,7 @@ WHERE resolved_at IS NOT NULL;
 
 Question 3 - Highest-Spending Customers per City
 ------------------------------------------------
-create table orders(
+create table customers(
 id int primary key,
 name varchar(255),
 city varchar(255)
@@ -4869,6 +4869,7 @@ SELECT CUSTOMER, SUM(DEBIT)-SUM(CREDIT)
 FROM TRANSACTIONS5 
 WHERE EXTRACT(MONTH FROM CAST(DT AS TIMESTAMP))=12
 GROUP BY CUSTOMER
+
 
 
 
