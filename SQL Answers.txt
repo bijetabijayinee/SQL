@@ -3835,6 +3835,20 @@ INSERT INTO FUNDS (id, order_date, fund_name, order_amount) VALUES
 (24, '2020-01-11', 'Small-Cap', 767),
 (25, '2021-11-14', 'Small-Cap', 489);
 
+ANSWER
+------
+
+SELECT
+    EXTRACT(MONTH FROM order_date) AS month,
+    fund_name,
+    SUM(order_amount) AS total_investments
+FROM 
+    FUNDS
+GROUP BY 
+    EXTRACT(MONTH FROM order_date), fund_name
+ORDER BY 
+    EXTRACT(MONTH FROM order_date), fund_name;
+
 -- Question 77: DPI Software Protocols Report
 -- Schema: traffic
 
@@ -3868,6 +3882,15 @@ INSERT INTO traffic (client, protocol, traffic_in, traffic_out) VALUES
 ('52-F2-BF-45-84-74', 'SSH', 632534, 128765),
 ('87-66-B5-A5-2F-7B', 'SSH', 835441, 354950),
 ('CE-FC-80-F3-95-58', 'UDP', 903443, 120298);
+
+ANSWER
+------
+
+SELECT PROTOCOL, SUM(TRAFFIC_IN), SUM(TRAFFIC_OUT)
+FROM TRAFFIC7 
+GROUP BY PROTOCOL
+HAVING SUM(TRAFFIC_IN)>SUM(TRAFFIC_OUT)
+ORDER BY PROTOCOL ASC
 
 -- Question 78: Advertising System Failures Report
 -- Schema: customers, campaigns, events
@@ -3931,6 +3954,27 @@ INSERT INTO events (dt, campaign_id, status) VALUES
 ('2021-12-02 11:56:50', 4, 'success'),
 ('2021-12-02 06:08:20', 5, 'success');
 
+ANSWER
+------
+
+SELECT
+    CONCAT(c.first_name, ' ', c.last_name) AS customer,
+    COUNT(*) AS failures
+FROM 
+    customers3 c
+JOIN 
+    campaigns3 cc ON c.id = cc.customer_id
+JOIN 
+    events3 e ON cc.id = e.campaign_id
+WHERE 
+    e.status = 'failure'
+GROUP BY 
+    customer
+HAVING 
+    COUNT(*) > 3
+ORDER BY 
+    failures DESC;
+
 -- Question 79: Election Exit Poll Report
 -- Schema: candidates, results
 
@@ -3977,6 +4021,21 @@ INSERT INTO results (candidate_id, vote_at) VALUES
 (5, '2021-12-02 15:50:50'), -- Note: candidate_id 5 does not exist in candidates table in sample data
 (5, '2021-12-02 20:45:08'); -- Note: candidate_id 5 does not exist in candidates table in sample data
 
+ANSWER
+------
+
+SELECT
+    CONCAT(c.first_name, ' ', c.last_name) AS candidate,
+    COUNT(*) AS votes
+FROM 
+    results2 r
+JOIN 
+    candidates c ON r.candidate_id = c.id
+GROUP BY 
+    candidate
+ORDER BY 
+    votes DESC;
+
 -- Question 80: Billing Analytics Customer Report
 -- Schema: events
 
@@ -4009,6 +4068,15 @@ INSERT INTO events (dt, customer, amount) VALUES
 ('2021-12-09 15:32:16', 'Orrin Curley', 11.04),
 ('2021-11-28 00:15:20', 'Rasla Venny', 14.59),
 ('2021-12-25 09:58:23', 'Rasla Venny', 6.41);
+
+ANSWER
+------
+
+SELECT CUSTOMER, COUNT(CUSTOMER), SUM(AMOUNT)
+FROM EVENTS4
+WHERE EXTRACT(MONTH FROM CAST(DT AS TIMESTAMP))=12
+GROUP BY CUSTOMER
+HAVING COUNT(CUSTOMER)>=3
 
 -- Question 81: Aggregate Marks
 -- Schema: marks
@@ -4631,6 +4699,7 @@ INSERT INTO transactions (dt, customer, debit, credit) VALUES
 ('2021-12-09 21:31:29', 'Rasla Venny', 87.96, 5.87),
 ('2021-12-11 13:02:54', 'Rasla Venny', 45.42, 55.81),
 ('2021-12-28 18:04:52', 'Rasla Venny', 68.17, 85.30);
+
 
 
 
