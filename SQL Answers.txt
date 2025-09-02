@@ -4567,6 +4567,17 @@ INSERT INTO SCHEDULE (PROFESSOR_ID, COURSE_ID, SEMESTER, YEAR) VALUES
 (1, 2, 3, 2008),
 (1, 7, 5, 2007);
 
+ANSWER
+------
+
+SELECT P.NAME, C.NAME
+FROM PROFESSOR AS P INNER JOIN SCHEDULE AS S 
+ON P.ID=S.PROFESSOR_ID
+INNER JOIN DEPARTMENT AS D 
+ON P.DEPARTMENT_ID=D.ID
+INNER JOIN COURSE AS C ON C.ID=S.COURSE_ID
+GROUP BY P.NAME, C.NAME
+
 -- Question 93: List the Course Names
 -- Schema: PROFESSOR, DEPARTMENT, COURSE, SCHEDULE
 
@@ -4650,6 +4661,16 @@ INSERT INTO SCHEDULE (PROFESSOR_ID, COURSE_ID, SEMESTER, YEAR) VALUES
 (7, 9, 1, 2014),
 (9, 9, 5, 2011);
 
+ANSWER
+------
+
+SELECT P.NAME, C.NAME
+FROM PROFESSOR2 AS P INNER JOIN SCHEDULE2 AS S
+ON P.ID=S.PROFESSOR_ID INNER JOIN COURSE2 AS C 
+ON C.ID=S.COURSE_ID
+INNER JOIN DEPARTMENT2 AS D ON D.ID=C.DEPARTMENT_ID
+GROUP BY P.NAME, C.NAME
+
 -- Question 94: Professor Names and Salaries
 -- Schema: DEPARTMENT, PROFESSOR
 
@@ -4689,6 +4710,19 @@ INSERT INTO PROFESSOR (ID, NAME, DEPARTMENT_ID, SALARY) VALUES
 (7, 'Louis Schmidt', 1, 13437),
 (5, 'Terri Thompson', 3, 28432),
 (6, 'Keith Gilbert', 5, 12610);
+
+ANSWER
+------
+SELECT P.NAME, P.SALARY
+FROM PROFESSOR3 P
+JOIN DEPARTMENT3 D ON P.DEPARTMENT_ID = D.ID
+WHERE D.NAME not in  ('Arts and Humanities')
+AND P.SALARY > (
+    SELECT MIN(P2.SALARY)
+    FROM PROFESSOR3 P2
+    JOIN DEPARTMENT3 D2 ON P2.DEPARTMENT_ID = D2.ID
+    WHERE D2.NAME = 'Arts and Humanities'
+);
 
 -- Question 95: Student's Major
 -- Schema: STUDENTS, MAJORS, REGISTER
@@ -4732,6 +4766,16 @@ INSERT INTO REGISTER (STUDENT_ID, MAJOR_ID) VALUES
 (3, 3000),
 (1, 2000);
 
+ANSWER
+------
+
+select student_name, major_name
+from students as s inner join register as r on
+s.student_id=r.student_id
+inner join majors as m on m.major_id=r.major_id
+group by student_name, major_name
+
+
 -- Question 96: Student Rank
 -- Schema: STUDENT
 
@@ -4751,6 +4795,13 @@ INSERT INTO STUDENT (ID, AGE, SCORE) VALUES
 (5, 19, 98),
 (6, 20, 50);
 
+ANSWER
+------
+SELECT SCORE
+FROM STUDENT
+ORDER BY SCORE DESC
+LIMIT 1 OFFSET 212;
+
 -- Question 97: Clumsy Administrator
 -- Schema: EMPLOYEE
 
@@ -4769,6 +4820,14 @@ INSERT INTO EMPLOYEE (NAME, PHONE, AGE) VALUES
 ('Sam', '1000040000', 30),
 ('Chris', '1000012000', 34),
 ('Chris', '1000012000', 34);
+
+ANSWER
+------
+
+SELECT NAME
+FROM EMPLOYEE2
+GROUP BY NAME,AGE
+HAVING COUNT(*) > 1;
 
 -- Question 98: Accounting Software Balance Report
 -- Schema: transactions
@@ -4803,6 +4862,14 @@ INSERT INTO transactions (dt, customer, debit, credit) VALUES
 ('2021-12-09 21:31:29', 'Rasla Venny', 87.96, 5.87),
 ('2021-12-11 13:02:54', 'Rasla Venny', 45.42, 55.81),
 ('2021-12-28 18:04:52', 'Rasla Venny', 68.17, 85.30);
+
+ANSWER
+------
+SELECT CUSTOMER, SUM(DEBIT)-SUM(CREDIT)
+FROM TRANSACTIONS5 
+WHERE EXTRACT(MONTH FROM CAST(DT AS TIMESTAMP))=12
+GROUP BY CUSTOMER
+
 
 
 
