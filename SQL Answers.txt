@@ -3781,6 +3781,21 @@ INSERT INTO RESULTS (id, first_name, last_name, cgpa_first_year, cgpa_second_yea
 (9, 'Ka', 'Hawbaker', 5.7, 6.4, 5.2, 6.8),
 (10, 'Alease', 'Blackston', 5.3, 7.5, 9.3, 6);
 
+ANSWER
+------
+
+SELECT
+    CONCAT(first_name, ' ', last_name) AS fullname,
+    ROUND(
+        (cgpa_first_year + cgpa_second_year + cgpa_third_year + cgpa_fourth_year)::numeric / 4.0, 
+        1
+    ) AS average_cgpa
+FROM results
+GROUP BY first_name, last_name,cgpa_first_year,cgpa_second_year,
+cgpa_third_year,cgpa_fourth_year
+order by average_cgpa desc
+
+
 -- Question 76: Mutual Funds
 -- Schema: FUNDS
 
@@ -4616,6 +4631,7 @@ INSERT INTO transactions (dt, customer, debit, credit) VALUES
 ('2021-12-09 21:31:29', 'Rasla Venny', 87.96, 5.87),
 ('2021-12-11 13:02:54', 'Rasla Venny', 45.42, 55.81),
 ('2021-12-28 18:04:52', 'Rasla Venny', 68.17, 85.30);
+
 
 
 
